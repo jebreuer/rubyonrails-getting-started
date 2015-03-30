@@ -16,5 +16,9 @@
 !/log/.keep
 /tmp
 
+# ignore vendor stuff
 /vendor/*
 !/vendor/.keep
+
+# ignore sublime text project files
+/*.sublime*
