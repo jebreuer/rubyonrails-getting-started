@@ -1,14 +1,14 @@
 # config valid only for current version of Capistrano
 lock '3.3.5'
 
-set :application, 'my_app_name'
-set :repo_url, 'git@example.com:me/my_repo.git'
+set :application, 'blog'
+set :repo_url, 'git@github.com:jebreuer/rubyonrails-getting-started.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app_name
-# set :deploy_to, '/var/www/my_app_name'
+set :deploy_to, '/media/cloud-storage/home/application/blog'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -45,4 +45,17 @@ namespace :deploy do
     end
   end
 
+  after :started, :prepare_update do
+  	on roles(:all) do 
+  		execute '/etc/init.d/application stop'
+  		execute 'sudo /usr/bin/monit unmonitor application'
+  	end
+  end
+
+  after :published, :finish_update do
+  	on roles(:all) do 
+  		execute 'sudo /usr/bin/monit monitor application'
+  		execute 'sudo /usr/bin/monit start application'
+  	end
+  end
 end
